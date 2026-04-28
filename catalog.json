@@ -1,0 +1,650 @@
+[
+  {
+    "category": "basic",
+    "name": "knit",
+    "label": "Knit",
+    "meaning": "K on RS, p on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "purl-dash",
+    "label": "Purl (dash variant)",
+    "meaning": "P on RS, k on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "purl-dot",
+    "label": "Purl (dot variant)",
+    "meaning": "P on RS, k on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "yarn-over",
+    "label": "Yarn over",
+    "meaning": "YO",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k2tog",
+    "label": "K2tog",
+    "meaning": "K2tog on RS, p2tog on WS (asymmetric variant leaning right)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k2tog-slash",
+    "label": "K2tog (slash variant)",
+    "meaning": "K2tog on RS, p2tog on WS (forward slash)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "ssk",
+    "label": "SSK",
+    "meaning": "SSK on RS, SSP on WS (asymmetric variant leaning left)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "ssk-backslash",
+    "label": "SSK (backslash variant)",
+    "meaning": "SSK on RS, SSP on WS (backslash)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p2tog-triangle",
+    "label": "P2tog (triangle variant)",
+    "meaning": "P2tog on RS, k2tog on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p2tog-dot-slash",
+    "label": "P2tog (dot variant)",
+    "meaning": "P2tog on RS, k2tog on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "ssp-triangle",
+    "label": "SSP (triangle variant)",
+    "meaning": "SSP on RS, SSK on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "ssp-dot-backslash",
+    "label": "SSP (dot variant)",
+    "meaning": "SSP on RS, SSK on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k1fb",
+    "label": "K1fb",
+    "meaning": "K1fb on RS, p1fb on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-knit-m",
+    "label": "M1 knitwise (M)",
+    "meaning": "Make 1 knitwise \u2014 plain M variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-purl-p",
+    "label": "M1 purlwise (bold P)",
+    "meaning": "Make 1 purlwise \u2014 bold P variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-purl-mp",
+    "label": "M1 purlwise (MP)",
+    "meaning": "Make 1 purlwise \u2014 MP text variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-right",
+    "label": "Right-slanting M1 (Y variant)",
+    "meaning": "Right-slanting make 1 \u2014 Y shape variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-right-mr",
+    "label": "Right-slanting M1 (MR)",
+    "meaning": "Right-slanting make 1 \u2014 MR text variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-left",
+    "label": "Left-slanting M1 (Y variant)",
+    "meaning": "Left-slanting make 1 \u2014 Y shape variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "m1-left-ml",
+    "label": "Left-slanting M1 (ML)",
+    "meaning": "Left-slanting make 1 \u2014 ML text variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "lifted-inc-right",
+    "label": "Right-slanting lifted inc",
+    "meaning": "Right-slanting lifted increase",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "lifted-inc-left",
+    "label": "Left-slanting lifted inc",
+    "meaning": "Left-slanting lifted increase",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sl1-wyb",
+    "label": "Sl 1 purlwise wyb (barred V)",
+    "meaning": "Sl 1 purlwise wyb on RS, sl 1 purlwise wyf on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sl1-wyb-v",
+    "label": "Sl 1 purlwise wyb (plain V)",
+    "meaning": "Sl 1 purlwise wyb on RS, sl 1 purlwise wyf on WS \u2014 plain V variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sl1-wyf",
+    "label": "Sl 1 purlwise wyf (barred)",
+    "meaning": "Sl 1 purlwise wyf on RS, sl 1 purlwise wyb on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sl1-wyf-crossed",
+    "label": "Sl 1 purlwise wyf (crossed V)",
+    "meaning": "Sl 1 purlwise wyf on RS, sl 1 purlwise wyb on WS \u2014 crossed V variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k3tog",
+    "label": "K3tog",
+    "meaning": "K3tog on RS, p3tog on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p3tog-triangle",
+    "label": "P3tog (triangle variant)",
+    "meaning": "P3tog on RS, k3tog on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p3tog-asterisk",
+    "label": "P3tog (asterisk variant)",
+    "meaning": "P3tog on RS, k3tog on WS \u2014 asterisk variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sk2p",
+    "label": "SK2P / SSSK",
+    "meaning": "SK2P on RS, SSSK on RS, SSSP on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sssp-triangle",
+    "label": "SSSP (triangle variant)",
+    "meaning": "SSSP on RS, SSSK on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "sssp-asterisk",
+    "label": "SSSP (asterisk variant)",
+    "meaning": "SSSP on RS, SSSK on WS \u2014 asterisk variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "s2kp2",
+    "label": "S2KP2 / SSPP2",
+    "meaning": "S2KP2 on RS, SSPP2 on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "s2kp2-arrow",
+    "label": "S2KP2 (arrow variant)",
+    "meaning": "S2KP2 on RS, SSPP2 on WS \u2014 centered arrow variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k1-tbl",
+    "label": "K1 tbl",
+    "meaning": "K1 tbl on RS, p1 tbl on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p1-tbl-loop",
+    "label": "P1 tbl (loop variant)",
+    "meaning": "P1 tbl on RS, k1 tbl on WS",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "p1-tbl-filled",
+    "label": "P1 tbl (filled dot variant)",
+    "meaning": "P1 tbl on RS, k1 tbl on WS \u2014 filled dot variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "bobble-b",
+    "label": "Bobble (B variant)",
+    "meaning": "Bobble \u2014 bold B variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "bobble-dot",
+    "label": "Bobble (filled dot)",
+    "meaning": "Bobble \u2014 filled dot variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "no-stitch",
+    "label": "No stitch",
+    "meaning": "Sts do not exist in these areas of chart",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "inc-1-to-3",
+    "label": "Inc 1-to-3",
+    "meaning": "Increase 1 stitch into 3",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "inc-1-to-4",
+    "label": "Inc 1-to-4",
+    "meaning": "Increase 1 stitch into 4",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "inc-1-to-5",
+    "label": "Inc 1-to-5",
+    "meaning": "Increase 1 stitch into 5",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "dec-4-to-1-left",
+    "label": "Dec 4-to-1 (left)",
+    "meaning": "Dec 4-to-1 (left slanting caret)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "dec-4-to-1-right",
+    "label": "Dec 4-to-1 (right)",
+    "meaning": "Dec 4-to-1 (right slanting caret)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "dec-4-to-1-center",
+    "label": "Dec 4-to-1 (centered)",
+    "meaning": "Dec 4-to-1 (centered caret)",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "dec-5-to-1",
+    "label": "Dec 5-to-1",
+    "meaning": "Dec 5-to-1",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k1-wrap-twice-loops",
+    "label": "K1 wrapping yarn twice (loops)",
+    "meaning": "K1, wrapping yarn twice around needle \u2014 loops variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "k1-wrap-twice-2",
+    "label": "K1 wrapping yarn twice (circled 2)",
+    "meaning": "K1, wrapping yarn twice around needle \u2014 circled 2 variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "bind-off",
+    "label": "Bind off",
+    "meaning": "Bind off",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "st-rem-bo",
+    "label": "Stitch remaining after BO",
+    "meaning": "Stitch remaining on right needle after last BO stitch",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "cast-on-u",
+    "label": "Cast on (U variant)",
+    "meaning": "Cast on \u2014 U shape variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "basic",
+    "name": "cast-on-plus",
+    "label": "Cast on (+ variant)",
+    "meaning": "Cast on \u2014 plus sign variant",
+    "w": 100,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-1-1-rc",
+    "label": "1/1 RC (RT)",
+    "meaning": "1/1 RC: sl 1 to cn, hold in back, k1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-1-1-lc",
+    "label": "1/1 LC (LT)",
+    "meaning": "1/1 LC: sl 1 to cn, hold in front, k1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-1-1-rpc",
+    "label": "1/1 RPC",
+    "meaning": "1/1 RPC: sl 1 to cn, hold in back, k1, p1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-1-1-lpc",
+    "label": "1/1 LPC",
+    "meaning": "1/1 LPC: sl 1 to cn, hold in front, p1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-rc",
+    "label": "2/1 RC",
+    "meaning": "2/1 RC: sl 1 to cn, hold in back, k2, k1 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-lc",
+    "label": "2/1 LC",
+    "meaning": "2/1 LC: sl 2 to cn, hold in front, k1, k2 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-rpc",
+    "label": "2/1 RPC",
+    "meaning": "2/1 RPC: sl 1 to cn, hold in back, k2, p1 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-lpc",
+    "label": "2/1 LPC",
+    "meaning": "2/1 LPC: sl 2 to cn, hold in front, p1, k2 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-2-rc",
+    "label": "2/2 RC",
+    "meaning": "2/2 RC: sl 2 to cn, hold in back, k2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-2-lc",
+    "label": "2/2 LC",
+    "meaning": "2/2 LC: sl 2 to cn, hold in front, k2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-2-rpc",
+    "label": "2/2 RPC",
+    "meaning": "2/2 RPC: sl 2 to cn, hold in back, k2, p2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-2-lpc",
+    "label": "2/2 LPC",
+    "meaning": "2/2 LPC: sl 2 to cn, hold in front, p2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-2-rpc",
+    "label": "2/1/2 RPC",
+    "meaning": "2/1/2 RPC: sl 2 to cn1 hold back, sl 1 to cn2 hold back, k2, p1 from cn2, k2 from cn1",
+    "w": 500,
+    "h": 100
+  },
+  {
+    "category": "cable-v1",
+    "name": "cable-v1-2-1-2-lpc",
+    "label": "2/1/2 LPC",
+    "meaning": "2/1/2 LPC: sl 2 to cn1 hold front, sl 1 to cn2 hold back, k2, p1 from cn2, k2 from cn1",
+    "w": 500,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-2-rc",
+    "label": "2-st RC (RT)",
+    "meaning": "2-st RC: sl 1 to cn, hold to back, k1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-2-lc",
+    "label": "2-st LC (LT)",
+    "meaning": "2-st LC: sl 1 to cn, hold to front, k1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-2-rpc",
+    "label": "2-st RPC",
+    "meaning": "2-st RPC: sl 1 to cn, hold to back, k1, p1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-2-lpc",
+    "label": "2-st LPC",
+    "meaning": "2-st LPC: sl 1 to cn, hold to front, p1, k1 from cn",
+    "w": 200,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-3-rc",
+    "label": "3-st RC",
+    "meaning": "3-st RC: sl 1 to cn, hold to back, k2, k1 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-3-lc",
+    "label": "3-st LC",
+    "meaning": "3-st LC: sl 2 to cn, hold to front, k1, k2 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-3-rpc",
+    "label": "3-st RPC",
+    "meaning": "3-st RPC: sl 1 to cn, hold to back, k2, p1 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-3-lpc",
+    "label": "3-st LPC",
+    "meaning": "3-st LPC: sl 2 to cn, hold to front, p1, k2 from cn",
+    "w": 300,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-4-rc",
+    "label": "4-st RC",
+    "meaning": "4-st RC: sl 2 to cn, hold to back, k2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-4-lc",
+    "label": "4-st LC",
+    "meaning": "4-st LC: sl 2 to cn, hold to front, k2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-4-rpc",
+    "label": "4-st RPC",
+    "meaning": "4-st RPC: sl 2 to cn, hold to back, k2, p2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-4-lpc",
+    "label": "4-st LPC",
+    "meaning": "4-st LPC: sl 2 to cn, hold to front, p2, k2 from cn",
+    "w": 400,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-5-rpc",
+    "label": "5-st RPC (2/1/2)",
+    "meaning": "5-st RPC: sl 2 to cn1 hold back, sl 1 to cn2 hold back, k2, p1 from cn2, k2 from cn1",
+    "w": 500,
+    "h": 100
+  },
+  {
+    "category": "cable-v2",
+    "name": "cable-v2-5-lpc",
+    "label": "5-st LPC (2/1/2)",
+    "meaning": "5-st LPC: sl 2 to cn1 hold front, sl 1 to cn2 hold back, k2, p1 from cn2, k2 from cn1",
+    "w": 500,
+    "h": 100
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "name": "cyc-svgs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Craft Yarn Council knit chart symbols — SVG icon set with build pipeline.",
+  "scripts": {
+    "optimize": "svgo --config svgo.config.js --recursive --folder basic && svgo --config svgo.config.js --recursive --folder cable-v1 && svgo --config svgo.config.js --recursive --folder cable-v2",
+    "extract": "node scripts/extract-svgs.js",
+    "build": "npm run optimize && npm run extract"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0",
+    "svgo": "^3.3.2"
+  }
+}

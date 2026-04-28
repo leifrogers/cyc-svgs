@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CYC Knit Chart Symbols — customize &amp; download</title>
+<meta name="description" content="Browse, customize and download the Craft Yarn Council knit chart symbols as SVG.">
+<style>
+  :root {
+    --fg: #1a1a1a;
+    --muted: #666;
+    --bg: #fafaf7;
+    --card: #fff;
+    --border: #ddd;
+    --accent: #2a6df4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e8e8e8;
+      --muted: #999;
+      --bg: #1a1a1a;
+      --card: #242424;
+      --border: #333;
+      --accent: #6a9bff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.5;
+  }
+  header {
+    padding: 1.25rem 1.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
+  header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  header a { color: var(--accent); }
+
+  main { display: grid; grid-template-columns: 280px 1fr; gap: 0; }
+  @media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+
+  aside {
+    border-right: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    background: var(--card);
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  aside h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 1rem 0 0.5rem; }
+  aside h2:first-child { margin-top: 0; }
+
+  .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; font-size: 0.85rem; }
+  .field label { color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+  .field input[type="text"],
+  .field input[type="number"],
+  .field select {
+    background: var(--bg); color: var(--fg);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.4rem 0.5rem; font: inherit; font-size: 0.85rem;
+  }
+  .field input[type="range"] { width: 100%; }
+  .swatch input[type="color"] {
+    width: 36px; height: 28px; padding: 0;
+    border: 1px solid var(--border); border-radius: 4px; background: none;
+  }
+  .check { display: flex; gap: 0.4rem; align-items: center; font-size: 0.85rem; color: var(--fg); }
+
+  button {
+    background: var(--accent); color: white; border: 0; border-radius: 4px;
+    padding: 0.5rem 0.8rem; font: inherit; font-size: 0.85rem; cursor: pointer;
+  }
+  button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+  button:hover { filter: brightness(1.1); }
+
+  section.content { padding: 1rem 1.5rem 3rem; }
+  .toolbar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+  .toolbar input[type="search"] {
+    flex: 1; min-width: 200px;
+    background: var(--card); color: var(--fg);
+    border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.5rem 0.7rem; font: inherit; font-size: 0.9rem;
+  }
+  .count { color: var(--muted); font-size: 0.85rem; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
+  .symbol {
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.75rem; margin: 0;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+  }
+  .symbol:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .symbol .thumb {
+    width: 100%; aspect-ratio: 1 / 1;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.5rem; border-radius: 4px;
+  }
+  .symbol .thumb svg { width: 80%; height: 80%; }
+  .symbol.cable .thumb svg { width: 100%; height: auto; }
+  .symbol figcaption { font-size: 0.78rem; line-height: 1.3; }
+  .symbol code {
+    display: block; color: var(--muted); font-size: 0.7rem;
+    font-family: ui-monospace, monospace; margin-bottom: 0.15rem; word-break: break-all;
+  }
+  .symbol strong { display: block; }
+  .symbol .meaning { display: block; color: var(--muted); font-size: 0.72rem; margin-top: 0.2rem; }
+
+  dialog {
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); color: var(--fg);
+    padding: 0; max-width: 600px; width: 90%;
+  }
+  dialog::backdrop { background: rgba(0,0,0,0.5); }
+  dialog .head {
+    padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  dialog .head h3 { margin: 0; font-size: 1.05rem; }
+  dialog .body { padding: 1.25rem; }
+  dialog .preview {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 1rem; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem; min-height: 180px;
+  }
+  dialog .preview svg { max-width: 100%; max-height: 220px; }
+  dialog pre {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 0.75rem; font-family: ui-monospace, monospace; font-size: 0.75rem;
+    overflow-x: auto; max-height: 200px; white-space: pre-wrap; word-break: break-all;
+  }
+  dialog .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  dialog .closeX { background: transparent; color: var(--muted); border: 0; font-size: 1.2rem; padding: 0 0.25rem; cursor: pointer; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>CYC Knit Chart Symbols</h1>
+    <p>Vector reproductions of the <a href="https://www.craftyarncouncil.com/standards/knit-chart-symbols" target="_blank" rel="noopener">Craft Yarn Council standard knit chart symbols</a>. Customize color, size, and background — preview live, then download individual SVGs or the whole set as a ZIP. <a href="https://github.com/leifrogers/cyc-svgs" target="_blank" rel="noopener">Source on GitHub</a>.</p>
+  </header>
+
+  <main>
+    <aside>
+      <h2>Color</h2>
+      <div class="field">
+        <label>Fill &amp; stroke <span class="swatch"><input type="color" id="strokeColor" value="#1a1a1a"></span></label>
+        <input type="text" id="strokeColorText" value="#1a1a1a">
+      </div>
+
+      <h2>Stroke</h2>
+      <div class="field">
+        <label>Width <span id="strokeWidthVal">5</span></label>
+        <input type="range" id="strokeWidth" min="0" max="40" step="1" value="8">
+      </div>
+      <div class="field">
+        <label>Linecap</label>
+        <select id="strokeLinecap">
+          <option value="butt">butt</option>
+          <option value="round" selected>round</option>
+          <option value="square">square</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Linejoin</label>
+        <select id="strokeLinejoin">
+          <option value="miter">miter</option>
+          <option value="round" selected>round</option>
+          <option value="bevel">bevel</option>
+        </select>
+      </div>
+
+      <h2>Background</h2>
+      <div class="field">
+        <label>Color <span class="swatch"><input type="color" id="bgColor" value="#ffffff"></span></label>
+        <input type="text" id="bgColorText" value="transparent">
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" id="bgNone" checked> Transparent</label>
+      </div>
+
+      <h2>Size</h2>
+      <div class="field">
+        <label>Export size (px) <span id="sizeVal">200</span></label>
+        <input type="range" id="size" min="32" max="512" step="8" value="200">
+      </div>
+
+      <h2>Export</h2>
+      <button id="downloadAll" style="width:100%;">Download all as ZIP</button>
+      <button class="secondary" id="downloadVisible" style="margin-top:0.5rem; width:100%;">Download visible as ZIP</button>
+      <button class="secondary" id="resetBtn" style="margin-top:0.5rem; width:100%;">Reset to defaults</button>
+    </aside>
+
+    <section class="content">
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search symbols (name, label, meaning)…">
+        <select id="categoryFilter">
+          <option value="">All categories</option>
+        </select>
+        <span class="count" id="count"></span>
+      </div>
+      <div id="grid" class="grid"></div>
+    </section>
+  </main>
+
+  <dialog id="detail">
+    <div class="head">
+      <h3 id="detailTitle"></h3>
+      <button class="closeX" id="detailClose" aria-label="Close">✕</button>
+    </div>
+    <div class="body">
+      <div class="preview" id="detailPreview"></div>
+      <p id="detailMeta" style="color: var(--muted); font-size: 0.85rem; margin: 0 0 0.75rem;"></p>
+      <pre id="detailCode"></pre>
+      <div class="actions">
+        <button id="detailDownload">Download SVG</button>
+        <button class="secondary" id="detailCopy">Copy markup</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script type="module">
+    // ---------------------------------------------------------------------
+    // Load extracted symbol data
+    // ---------------------------------------------------------------------
+    const DATA_URL = './dist/knitSymbols.json';
+    let symbols = {};
+    try {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      symbols = await res.json();
+    } catch (e) {
+      document.getElementById('grid').innerHTML =
+        `<p style="color:#c33;">Could not load <code>${DATA_URL}</code>: ${e.message}.<br>` +
+        `Run <code>npm run build</code> first, then refresh.</p>`;
+      throw e;
+    }
+
+    // ---------------------------------------------------------------------
+    // State
+    // ---------------------------------------------------------------------
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const defaultStrokeColor = prefersDark ? '#ffffff' : '#1a1a1a';
+    const state = {
+      strokeColor: defaultStrokeColor,
+      strokeWidth: 8,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      bgColor: '#ffffff',
+      bgNone: true,
+      size: 200,
+      search: '',
+      category: '',
+    };
+    const $ = (id) => document.getElementById(id);
+
+    // ---------------------------------------------------------------------
+    // SVG generation
+    //
+    // We render each symbol's authored innerHTML verbatim. Authored
+    // attributes are deliberate design intent:
+    //   - stroke-only symbols (e.g. knit, sl1-wyf) carry fill="none"
+    //   - filled glyphs carry stroke="none" (added at extract time)
+    //   - cable backgrounds and unannotated paths inherit fill from the
+    //     wrapper so the color picker themes them.
+    //
+    // The wrapper <svg>'s fill / stroke / stroke-* presentation attrs
+    // cascade only to children that don't specify their own.
+    // ---------------------------------------------------------------------
+    const buildSvg = (sym, opts = {}) => {
+      const { size = state.size, forExport = false } = opts;
+      const stroke = state.strokeColor;
+      const fill = stroke;
+      const sw = state.strokeWidth;
+      const bg = state.bgNone ? null : state.bgColor;
+
+      const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
+      const aspect = (vbW / vbH) || 1;
+      const w = size * aspect;
+      const h = size;
+
+      const bgRect = bg
+        ? `<rect x="0" y="0" width="${vbW}" height="${vbH}" fill="${bg}" stroke="none"/>`
+        : '';
+
+      const inner = sym.innerHTML || '';
+
+      const sizeAttrs = forExport ? '' : ` width="${w}" height="${h}"`;
+      return (
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${sym.viewBox}"${sizeAttrs}` +
+        ` fill="${fill}" stroke="${stroke}" stroke-width="${sw}"` +
+        ` stroke-linecap="${state.strokeLinecap}" stroke-linejoin="${state.strokeLinejoin}">` +
+        bgRect + inner + `</svg>`
+      );
+    };
+
+    // ---------------------------------------------------------------------
+    // Filtering & rendering
+    // ---------------------------------------------------------------------
+    const grid = $('grid');
+    const countEl = $('count');
+
+    const matches = (sym) => {
+      if (state.category && sym.category !== state.category) return false;
+      if (!state.search) return true;
+      const q = state.search.toLowerCase();
+      return [sym.name, sym.label, sym.meaning, sym.displayName, sym.key]
+        .filter(Boolean).some((s) => s.toLowerCase().includes(q));
+    };
+    const filtered = () => Object.values(symbols).filter(matches);
+
+    const renderGrid = () => {
+      const items = filtered();
+      countEl.textContent = `${items.length} of ${Object.keys(symbols).length} symbols`;
+      grid.innerHTML = items.map((sym) => {
+        const isCable = sym.category.startsWith('cable');
+        return `
+          <figure class="symbol ${isCable ? 'cable' : ''}" data-key="${sym.key}">
+            <div class="thumb">${buildSvg(sym, { size: 100 })}</div>
+            <figcaption>
+              <code>${sym.name}.svg</code>
+              <strong>${sym.label || sym.displayName}</strong>
+              ${sym.meaning ? `<span class="meaning">${sym.meaning}</span>` : ''}
+            </figcaption>
+          </figure>`;
+      }).join('');
+    };
+
+    const populateCategories = () => {
+      const cats = [...new Set(Object.values(symbols).map((s) => s.category))].sort();
+      const sel = $('categoryFilter');
+      for (const c of cats) {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        sel.appendChild(opt);
+      }
+    };
+
+    // ---------------------------------------------------------------------
+    // Detail modal
+    // ---------------------------------------------------------------------
+    const dialog = $('detail');
+    let activeKey = null;
+
+    const refreshDetail = () => {
+      if (!activeKey) return;
+      const sym = symbols[activeKey];
+      $('detailPreview').innerHTML = buildSvg(sym, { size: 220 });
+      $('detailCode').textContent = buildSvg(sym, { forExport: true });
+    };
+
+    const openDetail = (key) => {
+      const sym = symbols[key];
+      if (!sym) return;
+      activeKey = key;
+      $('detailTitle').textContent = sym.label || sym.displayName;
+      $('detailMeta').textContent = [
+        sym.meaning, `${sym.category}/${sym.name}.svg`, `viewBox: ${sym.viewBox}`,
+      ].filter(Boolean).join(' · ');
+      refreshDetail();
+      dialog.showModal();
+    };
+
+    $('detailClose').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    grid.addEventListener('click', (e) => {
+      const fig = e.target.closest('.symbol');
+      if (fig) openDetail(fig.dataset.key);
+    });
+
+    $('detailDownload').addEventListener('click', () => {
+      if (activeKey) downloadSvg(symbols[activeKey]);
+    });
+    $('detailCopy').addEventListener('click', async () => {
+      if (!activeKey) return;
+      try {
+        await navigator.clipboard.writeText(buildSvg(symbols[activeKey], { forExport: true }));
+        const btn = $('detailCopy');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1200);
+      } catch {
+        alert('Clipboard not available in this browser.');
+      }
+    });
+
+    // ---------------------------------------------------------------------
+    // Downloads
+    // ---------------------------------------------------------------------
+    const triggerDownload = (blob, filename) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+    const downloadSvg = (sym) => {
+      triggerDownload(
+        new Blob([buildSvg(sym, { forExport: true })], { type: 'image/svg+xml' }),
+        `${sym.name}.svg`,
+      );
+    };
+    const downloadZip = async (items, name) => {
+      const zip = new JSZip();
+      for (const sym of items) {
+        zip.folder(sym.category).file(`${sym.name}.svg`, buildSvg(sym, { forExport: true }));
+      }
+      triggerDownload(await zip.generateAsync({ type: 'blob' }), name);
+    };
+
+    $('downloadAll').addEventListener('click', () => {
+      downloadZip(Object.values(symbols), 'cyc-knit-symbols.zip');
+    });
+    $('downloadVisible').addEventListener('click', () => {
+      const items = filtered();
+      if (items.length) downloadZip(items, 'cyc-knit-symbols-filtered.zip');
+    });
+
+    // ---------------------------------------------------------------------
+    // Controls
+    // ---------------------------------------------------------------------
+    const expandHex = (v) => (v.length === 4
+      ? '#' + v.slice(1).split('').map((c) => c + c).join('')
+      : v.slice(0, 7));
+
+    const wireColor = (colorId, textId, stateKey, noneCheckId, defaultText) => {
+      const colorEl = $(colorId);
+      const textEl = $(textId);
+      const noneEl = noneCheckId ? $(noneCheckId) : null;
+      const apply = () => {
+        if (noneEl?.checked) {
+          textEl.value = defaultText;
+          textEl.disabled = true;
+          colorEl.disabled = true;
+          state[stateKey + 'None'] = true;
+        } else {
+          textEl.disabled = false;
+          colorEl.disabled = false;
+          if (noneEl) state[stateKey + 'None'] = false;
+          state[stateKey + 'Color'] = colorEl.value;
+          textEl.value = colorEl.value;
+        }
+        renderGrid();
+        refreshDetail();
+      };
+      colorEl.addEventListener('input', () => {
+        if (noneEl) noneEl.checked = false;
+        apply();
+      });
+      textEl.addEventListener('change', () => {
+        const v = textEl.value.trim();
+        if (/^#[0-9a-f]{3,8}$/i.test(v)) {
+          colorEl.value = expandHex(v);
+          if (noneEl) noneEl.checked = false;
+        } else if (noneEl && v === defaultText) {
+          noneEl.checked = true;
+        }
+        apply();
+      });
+      noneEl?.addEventListener('change', apply);
+      apply();
+    };
+
+    $('strokeColor').value = defaultStrokeColor;
+    $('strokeColorText').value = defaultStrokeColor;
+    wireColor('strokeColor', 'strokeColorText', 'stroke', null, '');
+    wireColor('bgColor', 'bgColorText', 'bg', 'bgNone', 'transparent');
+
+    $('strokeWidth').addEventListener('input', (e) => {
+      state.strokeWidth = +e.target.value;
+      $('strokeWidthVal').textContent = state.strokeWidth;
+      renderGrid();
+      refreshDetail();
+    });
+    $('strokeLinecap').addEventListener('change', (e) => {
+      state.strokeLinecap = e.target.value;
+      renderGrid(); refreshDetail();
+    });
+    $('strokeLinejoin').addEventListener('change', (e) => {
+      state.strokeLinejoin = e.target.value;
+      renderGrid(); refreshDetail();
+    });
+    $('size').addEventListener('input', (e) => {
+      state.size = +e.target.value;
+      $('sizeVal').textContent = state.size;
+      // size only affects exported width/height; thumbnails stay at 100.
+      refreshDetail();
+    });
+
+    $('search').addEventListener('input', (e) => {
+      state.search = e.target.value;
+      renderGrid();
+    });
+    $('categoryFilter').addEventListener('change', (e) => {
+      state.category = e.target.value;
+      renderGrid();
+    });
+    $('resetBtn').addEventListener('click', () => location.reload());
+
+    populateCategories();
+    renderGrid();
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+*.af~lock~
+
+# dist/knitSymbols.json is a build artifact, but it IS committed so that
+# GitHub Pages can serve it directly without a build step. Re-run
+# `npm run build` whenever SVG sources change, then commit dist/.
