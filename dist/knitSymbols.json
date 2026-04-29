@@ -448,7 +448,11 @@
     "file": "basic/p3tog-dot.svg",
     "displayName": "P3tog Dot",
     "viewBox": "0 0 100 100",
-    "innerHTML": "<path fill=\"none\" d=\"M50.713 50.5v15.815M30.609 73l40.208-45M50.713 50.5 70.817 73\"/><path d=\"M41 39a5 5 0 1 0 0 10 5 5 0 1 0 0-10\" stroke=\"none\"/>"
+    "innerHTML": "<path fill=\"none\" d=\"M50.713 50.5v15.815M30.609 73l40.208-45M50.713 50.5 70.817 73\"/><path d=\"M41 39a5 5 0 1 0 0 10 5 5 0 1 0 0-10\" stroke=\"none\"/>",
+    "label": "P3tog (dot variant)",
+    "meaning": "P3tog on RS, k3tog on WS — dot variant",
+    "cellWidth": 100,
+    "cellHeight": 100
   },
   "basicP3togTriangle": {
     "key": "basicP3togTriangle",
@@ -639,7 +643,11 @@
     "file": "basic/sssp-dot.svg",
     "displayName": "Sssp Dot",
     "viewBox": "0 0 100 100",
-    "innerHTML": "<path fill=\"none\" d=\"M50 50v15.112M68.696 71.5l-37.392-43M50 50 31.304 71.5\"/><path d=\"M57 39a4 4 0 1 0 0 8 4 4 0 1 0 0-8\" stroke=\"none\"/>"
+    "innerHTML": "<path fill=\"none\" d=\"M50 50v15.112M68.696 71.5l-37.392-43M50 50 31.304 71.5\"/><path d=\"M57 39a4 4 0 1 0 0 8 4 4 0 1 0 0-8\" stroke=\"none\"/>",
+    "label": "SSSP (dot variant)",
+    "meaning": "SSSP on RS, SSSK on WS — dot variant",
+    "cellWidth": 100,
+    "cellHeight": 100
   },
   "basicSsspTriangle": {
     "key": "basicSsspTriangle",

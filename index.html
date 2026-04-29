@@ -89,6 +89,36 @@
   }
   .count { color: var(--muted); font-size: 0.85rem; }
 
+  .mobileOnly { display: none; }
+  #sidebarBackdrop { display: none; }
+  .fullWidth { width: 100%; }
+  .mb075 { margin-bottom: 0.75rem; }
+
+  @media (max-width: 800px) {
+    aside {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: min(320px, 88vw);
+      max-height: none;
+      z-index: 20;
+      transform: translateX(-105%);
+      transition: transform 0.2s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+    body.sidebar-open aside { transform: translateX(0); }
+    #sidebarBackdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 10;
+    }
+    body.sidebar-open #sidebarBackdrop { display: block; }
+    body.sidebar-open { overflow: hidden; }
+    .mobileOnly { display: inline-flex; }
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -150,7 +180,8 @@
   </header>
 
   <main>
-    <aside>
+    <aside id="sidebar" aria-label="Customizer controls">
+      <button class="secondary mobileOnly fullWidth mb075" id="sidebarClose">Close controls</button>
       <h2>Color</h2>
       <div class="field">
         <label>Fill &amp; stroke <span class="swatch"><input type="color" id="strokeColor" value="#1a1a1a"></span></label>
@@ -202,6 +233,7 @@
 
     <section class="content">
       <div class="toolbar">
+        <button class="secondary mobileOnly" id="sidebarToggle" aria-controls="sidebar" aria-expanded="false">Customizer</button>
         <input type="search" id="search" placeholder="Search symbols (name, label, meaning)…">
         <select id="categoryFilter">
           <option value="">All categories</option>
@@ -211,6 +243,7 @@
       <div id="grid" class="grid"></div>
     </section>
   </main>
+  <div id="sidebarBackdrop" aria-hidden="true"></div>
 
   <dialog id="detail">
     <div class="head">
@@ -263,6 +296,23 @@
       category: '',
     };
     const $ = (id) => document.getElementById(id);
+
+    const mobileQuery = window.matchMedia('(max-width: 800px)');
+    const setSidebarOpen = (open) => {
+      const shouldOpen = Boolean(open && mobileQuery.matches);
+      document.body.classList.toggle('sidebar-open', shouldOpen);
+      const toggle = $('sidebarToggle');
+      if (toggle) toggle.setAttribute('aria-expanded', String(shouldOpen));
+    };
+
+    $('sidebarToggle')?.addEventListener('click', () => {
+      setSidebarOpen(!document.body.classList.contains('sidebar-open'));
+    });
+    $('sidebarClose')?.addEventListener('click', () => setSidebarOpen(false));
+    $('sidebarBackdrop')?.addEventListener('click', () => setSidebarOpen(false));
+    mobileQuery.addEventListener('change', () => {
+      if (!mobileQuery.matches) setSidebarOpen(false);
+    });
 
     // ---------------------------------------------------------------------
     // SVG generation

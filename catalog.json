@@ -225,9 +225,9 @@
   },
   {
     "category": "basic",
-    "name": "p3tog-asterisk",
-    "label": "P3tog (asterisk variant)",
-    "meaning": "P3tog on RS, k3tog on WS \u2014 asterisk variant",
+    "name": "p3tog-dot",
+    "label": "P3tog (dot variant)",
+    "meaning": "P3tog on RS, k3tog on WS \u2014 dot variant",
     "w": 100,
     "h": 100
   },
@@ -249,9 +249,9 @@
   },
   {
     "category": "basic",
-    "name": "sssp-asterisk",
-    "label": "SSSP (asterisk variant)",
-    "meaning": "SSSP on RS, SSSK on WS \u2014 asterisk variant",
+    "name": "sssp-dot",
+    "label": "SSSP (dot variant)",
+    "meaning": "SSSP on RS, SSSK on WS \u2014 dot variant",
     "w": 100,
     "h": 100
   },
