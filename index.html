@@ -257,6 +257,7 @@
       <div class="actions">
         <button id="detailDownload">Download SVG</button>
         <button class="secondary" id="detailCopy">Copy markup</button>
+        <button class="secondary" id="detailCopyDataUri">Copy Data URI</button>
       </div>
     </div>
   </dialog>
@@ -284,14 +285,38 @@
     // ---------------------------------------------------------------------
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const defaultStrokeColor = prefersDark ? '#ffffff' : '#1a1a1a';
+
+    const loadState = () => {
+      try {
+        const saved = localStorage.getItem('cyc-customizer-state');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        // ignore storage errors
+      }
+      return null;
+    };
+
+    const saveState = () => {
+      try {
+        const toSave = { ...state };
+        delete toSave.search; // don't persist search
+        delete toSave.category; // don't persist category
+        localStorage.setItem('cyc-customizer-state', JSON.stringify(toSave));
+      } catch (e) {
+        // ignore storage errors
+      }
+    };
+
+    const savedState = loadState() || {};
+
     const state = {
-      strokeColor: defaultStrokeColor,
-      strokeWidth: 8,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      bgColor: '#ffffff',
-      bgNone: true,
-      size: 200,
+      strokeColor: savedState.strokeColor || defaultStrokeColor,
+      strokeWidth: savedState.strokeWidth !== undefined ? savedState.strokeWidth : 8,
+      strokeLinecap: savedState.strokeLinecap || 'round',
+      strokeLinejoin: savedState.strokeLinejoin || 'round',
+      bgColor: savedState.bgColor || '#ffffff',
+      bgNone: savedState.bgNone !== undefined ? savedState.bgNone : true,
+      size: savedState.size || 200,
       search: '',
       category: '',
     };
@@ -364,8 +389,12 @@
       if (state.category && sym.category !== state.category) return false;
       if (!state.search) return true;
       const q = state.search.toLowerCase();
-      return [sym.name, sym.label, sym.meaning, sym.displayName, sym.key]
-        .filter(Boolean).some((s) => s.toLowerCase().includes(q));
+
+      const searchFields = [sym.name, sym.label, sym.meaning, sym.displayName, sym.key];
+      if (sym.aliases) {
+        searchFields.push(...sym.aliases);
+      }
+      return searchFields.filter(Boolean).some((s) => s.toLowerCase().includes(q));
     };
     const filtered = () => Object.values(symbols).filter(matches);
 
@@ -443,6 +472,28 @@
         alert('Clipboard not available in this browser.');
       }
     });
+    $('detailCopyDataUri').addEventListener('click', async () => {
+      if (!activeKey) return;
+      try {
+        const svgStr = buildSvg(symbols[activeKey], { forExport: true });
+        // Minimal URL-encoding for SVG to be used as a Data URI (often shorter than base64)
+        const encoded = encodeURIComponent(svgStr)
+          .replace(/%20/g, ' ')
+          .replace(/%3D/g, '=')
+          .replace(/%3A/g, ':')
+          .replace(/%2F/g, '/')
+          .replace(/%22/g, "'");
+        const dataUri = `data:image/svg+xml,${encoded}`;
+
+        await navigator.clipboard.writeText(dataUri);
+        const btn = $('detailCopyDataUri');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1200);
+      } catch {
+        alert('Clipboard not available in this browser.');
+      }
+    });
 
     // ---------------------------------------------------------------------
     // Downloads
@@ -457,7 +508,7 @@
     const downloadSvg = (sym) => {
       triggerDownload(
         new Blob([buildSvg(sym, { forExport: true })], { type: 'image/svg+xml' }),
-        `${sym.name}.svg`,
+        `${sym.category}-${sym.name}.svg`,
       );
     };
     const downloadZip = async (items, name) => {
@@ -500,6 +551,7 @@
           state[stateKey + 'Color'] = colorEl.value;
           textEl.value = colorEl.value;
         }
+        saveState();
         renderGrid();
         refreshDetail();
       };
@@ -521,28 +573,44 @@
       apply();
     };
 
-    $('strokeColor').value = defaultStrokeColor;
-    $('strokeColorText').value = defaultStrokeColor;
+    // Initialize UI to match state
+    $('strokeColor').value = state.strokeColor;
+    $('strokeColorText').value = state.strokeColor;
+    $('bgColor').value = state.bgColor;
+    $('bgColorText').value = state.bgNone ? 'transparent' : state.bgColor;
+    if ($('bgNone')) $('bgNone').checked = state.bgNone;
+
+    $('strokeWidth').value = state.strokeWidth;
+    $('strokeWidthVal').textContent = state.strokeWidth;
+    $('strokeLinecap').value = state.strokeLinecap;
+    $('strokeLinejoin').value = state.strokeLinejoin;
+    $('size').value = state.size;
+    $('sizeVal').textContent = state.size;
+
     wireColor('strokeColor', 'strokeColorText', 'stroke', null, '');
     wireColor('bgColor', 'bgColorText', 'bg', 'bgNone', 'transparent');
 
     $('strokeWidth').addEventListener('input', (e) => {
       state.strokeWidth = +e.target.value;
       $('strokeWidthVal').textContent = state.strokeWidth;
+      saveState();
       renderGrid();
       refreshDetail();
     });
     $('strokeLinecap').addEventListener('change', (e) => {
       state.strokeLinecap = e.target.value;
+      saveState();
       renderGrid(); refreshDetail();
     });
     $('strokeLinejoin').addEventListener('change', (e) => {
       state.strokeLinejoin = e.target.value;
+      saveState();
       renderGrid(); refreshDetail();
     });
     $('size').addEventListener('input', (e) => {
       state.size = +e.target.value;
       $('sizeVal').textContent = state.size;
+      saveState();
       // size only affects exported width/height; thumbnails stay at 100.
       refreshDetail();
     });
@@ -555,7 +623,10 @@
       state.category = e.target.value;
       renderGrid();
     });
-    $('resetBtn').addEventListener('click', () => location.reload());
+    $('resetBtn').addEventListener('click', () => {
+      localStorage.removeItem('cyc-customizer-state');
+      location.reload();
+    });
 
     populateCategories();
     renderGrid();
