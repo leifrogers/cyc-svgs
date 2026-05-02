@@ -34,7 +34,7 @@ const toCamelKey = (category, name) => {
   return merged.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
 };
 
-const toDisplayName = (name) =>
+export const toDisplayName = (name) =>
   name.split('-').map((p) => (p.length ? p[0].toUpperCase() + p.slice(1) : p)).join(' ');
 
 const loadCatalogIndex = () => {
@@ -151,4 +151,6 @@ const main = () => {
   }
 };
 
-main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main();
+}
