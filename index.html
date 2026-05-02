@@ -481,9 +481,8 @@
           .replace(/%20/g, ' ')
           .replace(/%3D/g, '=')
           .replace(/%3A/g, ':')
-          .replace(/%2F/g, '/')
-          .replace(/%22/g, "'");
-        const dataUri = `data:image/svg+xml,${encoded}`;
+          .replace(/%2F/g, '/');
+        const dataUri = `data:image/svg+xml;charset=utf-8,${encoded}`;
 
         await navigator.clipboard.writeText(dataUri);
         const btn = $('detailCopyDataUri');
