@@ -272,6 +272,13 @@
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       symbols = await res.json();
+
+      // Pre-parse viewBox for performance
+      for (const key in symbols) {
+        const sym = symbols[key];
+        const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
+        sym._parsedVB = { vbW, vbH, aspect: (vbW / vbH) || 1 };
+      }
     } catch (e) {
       document.getElementById('grid').innerHTML =
         `<p style="color:#c33;">Could not load <code>${DATA_URL}</code>: ${e.message}.<br>` +
@@ -334,8 +341,7 @@
       const sw = state.strokeWidth;
       const bg = state.bgNone ? null : state.bgColor;
 
-      const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
-      const aspect = (vbW / vbH) || 1;
+      const { vbW, vbH, aspect } = sym._parsedVB;
       const w = size * aspect;
       const h = size;
 
