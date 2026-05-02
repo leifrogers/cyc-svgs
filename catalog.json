@@ -12,6 +12,7 @@
     "name": "purl-dash",
     "label": "Purl (dash variant)",
     "meaning": "P on RS, k on WS",
+    "aliases": ["purl"],
     "w": 100,
     "h": 100
   },
@@ -20,6 +21,7 @@
     "name": "purl-dot",
     "label": "Purl (dot variant)",
     "meaning": "P on RS, k on WS",
+    "aliases": ["purl"],
     "w": 100,
     "h": 100
   },

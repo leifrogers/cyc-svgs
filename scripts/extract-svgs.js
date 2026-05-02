@@ -119,6 +119,7 @@ const main = () => {
       if (meta) {
         data.label = meta.label;
         data.meaning = meta.meaning;
+        if (meta.aliases) data.aliases = meta.aliases;
         if (meta.w) data.cellWidth = meta.w;
         if (meta.h) data.cellHeight = meta.h;
       } else {
