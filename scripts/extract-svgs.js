@@ -37,6 +37,12 @@ const toCamelKey = (category, name) => {
 export const toDisplayName = (name) =>
   name.split('-').map((p) => (p.length ? p[0].toUpperCase() + p.slice(1) : p)).join(' ');
 
+const logNote = (items, label) => {
+  if (!items.length) return;
+  console.warn(`  Note: ${items.length} ${label}`);
+  for (const k of items) console.warn(`    - ${k}`);
+};
+
 const loadCatalogIndex = () => {
   if (!fs.existsSync(catalogFile)) return new Map();
   const raw = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
@@ -135,10 +141,8 @@ const main = () => {
   fs.writeFileSync(outputFile, JSON.stringify(symbols, null, 2) + '\n');
 
   console.log(`Extracted ${count} symbols → ${path.relative(repoRoot, outputFile)}`);
-  if (missingFromCatalog.length) {
-    console.warn(`  Note: ${missingFromCatalog.length} SVG(s) without catalog.json metadata:`);
-    for (const k of missingFromCatalog) console.warn(`    - ${k}`);
-  }
+  logNote(missingFromCatalog, 'SVG(s) without catalog.json metadata:');
+
   // Cross-check: catalog entries with no SVG file present.
   const orphanCatalog = [];
   for (const [k] of catalogIndex) {
@@ -146,10 +150,7 @@ const main = () => {
     const expected = path.join(repoRoot, c, `${n}.svg`);
     if (!fs.existsSync(expected)) orphanCatalog.push(k);
   }
-  if (orphanCatalog.length) {
-    console.warn(`  Note: ${orphanCatalog.length} catalog entr(y/ies) with no SVG export yet:`);
-    for (const k of orphanCatalog) console.warn(`    - ${k}`);
-  }
+  logNote(orphanCatalog, 'catalog entr(y/ies) with no SVG export yet:');
 };
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
