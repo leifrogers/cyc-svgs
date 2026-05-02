@@ -281,9 +281,23 @@
         sym._parsedVB = { vbW, vbH, aspect: (vbW / vbH) || 1 };
       }
     } catch (e) {
-      document.getElementById('grid').innerHTML =
-        `<p style="color:#c33;">Could not load <code>${DATA_URL}</code>: ${e.message}.<br>` +
-        `Run <code>npm run build</code> first, then refresh.</p>`;
+      const grid = document.getElementById('grid');
+      const p = document.createElement('p');
+      p.style.color = '#c33';
+      p.textContent = `Could not load ${DATA_URL}: ${e.message}.`;
+      const br = document.createElement('br');
+      const span = document.createElement('span');
+      span.textContent = 'Run ';
+      const code = document.createElement('code');
+      code.textContent = 'npm run build';
+      const span2 = document.createElement('span');
+      span2.textContent = ' first, then refresh.';
+      p.appendChild(br);
+      p.appendChild(span);
+      p.appendChild(code);
+      p.appendChild(span2);
+      grid.innerHTML = '';
+      grid.appendChild(p);
       throw e;
     }
 
@@ -328,6 +342,15 @@
       category: '',
     };
     const $ = (id) => document.getElementById(id);
+    const esc = (s) => {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    };
 
     const mobileQuery = window.matchMedia('(max-width: 800px)');
     const setSidebarOpen = (open) => {
@@ -371,16 +394,16 @@
       const h = size;
 
       const bgRect = bg
-        ? `<rect x="0" y="0" width="${vbW}" height="${vbH}" fill="${bg}" stroke="none"/>`
+        ? `<rect x="0" y="0" width="${esc(vbW)}" height="${esc(vbH)}" fill="${esc(bg)}" stroke="none"/>`
         : '';
 
       const inner = sym.innerHTML || '';
 
-      const sizeAttrs = forExport ? '' : ` width="${w}" height="${h}"`;
+      const sizeAttrs = forExport ? '' : ` width="${esc(w)}" height="${esc(h)}"`;
       return (
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${sym.viewBox}"${sizeAttrs}` +
-        ` fill="${fill}" stroke="${stroke}" stroke-width="${sw}"` +
-        ` stroke-linecap="${state.strokeLinecap}" stroke-linejoin="${state.strokeLinejoin}">` +
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${esc(sym.viewBox)}"${sizeAttrs}` +
+        ` fill="${esc(fill)}" stroke="${esc(stroke)}" stroke-width="${esc(sw)}"` +
+        ` stroke-linecap="${esc(state.strokeLinecap)}" stroke-linejoin="${esc(state.strokeLinejoin)}">` +
         bgRect + inner + `</svg>`
       );
     };
@@ -409,13 +432,14 @@
       countEl.textContent = `${items.length} of ${Object.keys(symbols).length} symbols`;
       grid.innerHTML = items.map((sym) => {
         const isCable = sym.category.startsWith('cable');
+        const label = sym.label || sym.displayName;
         return `
-          <figure class="symbol ${isCable ? 'cable' : ''}" data-key="${sym.key}">
+          <figure class="symbol ${isCable ? 'cable' : ''}" data-key="${esc(sym.key)}">
             <div class="thumb">${buildSvg(sym, { size: 100 })}</div>
             <figcaption>
-              <code>${sym.name}.svg</code>
-              <strong>${sym.label || sym.displayName}</strong>
-              ${sym.meaning ? `<span class="meaning">${sym.meaning}</span>` : ''}
+              <code>${esc(sym.name)}.svg</code>
+              <strong>${esc(label)}</strong>
+              ${sym.meaning ? `<span class="meaning">${esc(sym.meaning)}</span>` : ''}
             </figcaption>
           </figure>`;
       }).join('');
