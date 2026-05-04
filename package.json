@@ -7,6 +7,7 @@
   "scripts": {
     "optimize": "svgo --config svgo.config.js --recursive --folder basic && svgo --config svgo.config.js --recursive --folder cable-v1 && svgo --config svgo.config.js --recursive --folder cable-v2",
     "extract": "node scripts/extract-svgs.js",
+    "test": "node --test scripts/extract-svgs.test.js",
     "build": "npm run optimize && npm run extract"
   },
   "devDependencies": {

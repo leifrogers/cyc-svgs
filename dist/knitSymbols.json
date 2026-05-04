@@ -477,6 +477,9 @@
     "innerHTML": "<path fill=\"none\" d=\"M20 50h60\"/>",
     "label": "Purl (dash variant)",
     "meaning": "P on RS, k on WS",
+    "aliases": [
+      "purl"
+    ],
     "cellWidth": 100,
     "cellHeight": 100
   },
@@ -490,6 +493,9 @@
     "innerHTML": "<path d=\"M50 42.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 1 0 0-15\" stroke=\"none\"/>",
     "label": "Purl (dot variant)",
     "meaning": "P on RS, k on WS",
+    "aliases": [
+      "purl"
+    ],
     "cellWidth": 100,
     "cellHeight": 100
   },

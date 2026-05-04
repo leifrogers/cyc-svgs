@@ -257,6 +257,7 @@
       <div class="actions">
         <button id="detailDownload">Download SVG</button>
         <button class="secondary" id="detailCopy">Copy markup</button>
+        <button class="secondary" id="detailCopyDataUri">Copy Data URI</button>
       </div>
     </div>
   </dialog>
@@ -272,10 +273,31 @@
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       symbols = await res.json();
+
+      // Pre-parse viewBox for performance
+      for (const key in symbols) {
+        const sym = symbols[key];
+        const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
+        sym._parsedVB = { vbW, vbH, aspect: (vbW / vbH) || 1 };
+      }
     } catch (e) {
-      document.getElementById('grid').innerHTML =
-        `<p style="color:#c33;">Could not load <code>${DATA_URL}</code>: ${e.message}.<br>` +
-        `Run <code>npm run build</code> first, then refresh.</p>`;
+      const grid = document.getElementById('grid');
+      const p = document.createElement('p');
+      p.style.color = '#c33';
+      p.textContent = `Could not load ${DATA_URL}: ${e.message}.`;
+      const br = document.createElement('br');
+      const span = document.createElement('span');
+      span.textContent = 'Run ';
+      const code = document.createElement('code');
+      code.textContent = 'npm run build';
+      const span2 = document.createElement('span');
+      span2.textContent = ' first, then refresh.';
+      p.appendChild(br);
+      p.appendChild(span);
+      p.appendChild(code);
+      p.appendChild(span2);
+      grid.innerHTML = '';
+      grid.appendChild(p);
       throw e;
     }
 
@@ -284,18 +306,51 @@
     // ---------------------------------------------------------------------
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const defaultStrokeColor = prefersDark ? '#ffffff' : '#1a1a1a';
+
+    const loadState = () => {
+      try {
+        const saved = localStorage.getItem('cyc-customizer-state');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        // ignore storage errors
+      }
+      return null;
+    };
+
+    const saveState = () => {
+      try {
+        const toSave = { ...state };
+        delete toSave.search; // don't persist search
+        delete toSave.category; // don't persist category
+        localStorage.setItem('cyc-customizer-state', JSON.stringify(toSave));
+      } catch (e) {
+        // ignore storage errors
+      }
+    };
+
+    const savedState = loadState() || {};
+
     const state = {
-      strokeColor: defaultStrokeColor,
-      strokeWidth: 8,
-      strokeLinecap: 'round',
-      strokeLinejoin: 'round',
-      bgColor: '#ffffff',
-      bgNone: true,
-      size: 200,
+      strokeColor: savedState.strokeColor || defaultStrokeColor,
+      strokeWidth: savedState.strokeWidth !== undefined ? savedState.strokeWidth : 8,
+      strokeLinecap: savedState.strokeLinecap || 'round',
+      strokeLinejoin: savedState.strokeLinejoin || 'round',
+      bgColor: savedState.bgColor || '#ffffff',
+      bgNone: savedState.bgNone !== undefined ? savedState.bgNone : true,
+      size: savedState.size || 200,
       search: '',
       category: '',
     };
     const $ = (id) => document.getElementById(id);
+    const esc = (s) => {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    };
 
     const mobileQuery = window.matchMedia('(max-width: 800px)');
     const setSidebarOpen = (open) => {
@@ -334,22 +389,21 @@
       const sw = state.strokeWidth;
       const bg = state.bgNone ? null : state.bgColor;
 
-      const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
-      const aspect = (vbW / vbH) || 1;
+      const { vbW, vbH, aspect } = sym._parsedVB;
       const w = size * aspect;
       const h = size;
 
       const bgRect = bg
-        ? `<rect x="0" y="0" width="${vbW}" height="${vbH}" fill="${bg}" stroke="none"/>`
+        ? `<rect x="0" y="0" width="${esc(vbW)}" height="${esc(vbH)}" fill="${esc(bg)}" stroke="none"/>`
         : '';
 
       const inner = sym.innerHTML || '';
 
-      const sizeAttrs = forExport ? '' : ` width="${w}" height="${h}"`;
+      const sizeAttrs = forExport ? '' : ` width="${esc(w)}" height="${esc(h)}"`;
       return (
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${sym.viewBox}"${sizeAttrs}` +
-        ` fill="${fill}" stroke="${stroke}" stroke-width="${sw}"` +
-        ` stroke-linecap="${state.strokeLinecap}" stroke-linejoin="${state.strokeLinejoin}">` +
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${esc(sym.viewBox)}"${sizeAttrs}` +
+        ` fill="${esc(fill)}" stroke="${esc(stroke)}" stroke-width="${esc(sw)}"` +
+        ` stroke-linecap="${esc(state.strokeLinecap)}" stroke-linejoin="${esc(state.strokeLinejoin)}">` +
         bgRect + inner + `</svg>`
       );
     };
@@ -364,8 +418,12 @@
       if (state.category && sym.category !== state.category) return false;
       if (!state.search) return true;
       const q = state.search.toLowerCase();
-      return [sym.name, sym.label, sym.meaning, sym.displayName, sym.key]
-        .filter(Boolean).some((s) => s.toLowerCase().includes(q));
+
+      const searchFields = [sym.name, sym.label, sym.meaning, sym.displayName, sym.key];
+      if (sym.aliases) {
+        searchFields.push(...sym.aliases);
+      }
+      return searchFields.filter(Boolean).some((s) => s.toLowerCase().includes(q));
     };
     const filtered = () => Object.values(symbols).filter(matches);
 
@@ -374,13 +432,14 @@
       countEl.textContent = `${items.length} of ${Object.keys(symbols).length} symbols`;
       grid.innerHTML = items.map((sym) => {
         const isCable = sym.category.startsWith('cable');
+        const label = sym.label || sym.displayName;
         return `
-          <figure class="symbol ${isCable ? 'cable' : ''}" data-key="${sym.key}">
+          <figure class="symbol ${isCable ? 'cable' : ''}" data-key="${esc(sym.key)}">
             <div class="thumb">${buildSvg(sym, { size: 100 })}</div>
             <figcaption>
-              <code>${sym.name}.svg</code>
-              <strong>${sym.label || sym.displayName}</strong>
-              ${sym.meaning ? `<span class="meaning">${sym.meaning}</span>` : ''}
+              <code>${esc(sym.name)}.svg</code>
+              <strong>${esc(label)}</strong>
+              ${sym.meaning ? `<span class="meaning">${esc(sym.meaning)}</span>` : ''}
             </figcaption>
           </figure>`;
       }).join('');
@@ -443,6 +502,27 @@
         alert('Clipboard not available in this browser.');
       }
     });
+    $('detailCopyDataUri').addEventListener('click', async () => {
+      if (!activeKey) return;
+      try {
+        const svgStr = buildSvg(symbols[activeKey], { forExport: true });
+        // Minimal URL-encoding for SVG to be used as a Data URI (often shorter than base64)
+        const encoded = encodeURIComponent(svgStr)
+          .replace(/%20/g, ' ')
+          .replace(/%3D/g, '=')
+          .replace(/%3A/g, ':')
+          .replace(/%2F/g, '/');
+        const dataUri = `data:image/svg+xml;charset=utf-8,${encoded}`;
+
+        await navigator.clipboard.writeText(dataUri);
+        const btn = $('detailCopyDataUri');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 1200);
+      } catch {
+        alert('Clipboard not available in this browser.');
+      }
+    });
 
     // ---------------------------------------------------------------------
     // Downloads
@@ -457,7 +537,7 @@
     const downloadSvg = (sym) => {
       triggerDownload(
         new Blob([buildSvg(sym, { forExport: true })], { type: 'image/svg+xml' }),
-        `${sym.name}.svg`,
+        `${sym.category}-${sym.name}.svg`,
       );
     };
     const downloadZip = async (items, name) => {
@@ -500,6 +580,7 @@
           state[stateKey + 'Color'] = colorEl.value;
           textEl.value = colorEl.value;
         }
+        saveState();
         renderGrid();
         refreshDetail();
       };
@@ -521,28 +602,44 @@
       apply();
     };
 
-    $('strokeColor').value = defaultStrokeColor;
-    $('strokeColorText').value = defaultStrokeColor;
+    // Initialize UI to match state
+    $('strokeColor').value = state.strokeColor;
+    $('strokeColorText').value = state.strokeColor;
+    $('bgColor').value = state.bgColor;
+    $('bgColorText').value = state.bgNone ? 'transparent' : state.bgColor;
+    if ($('bgNone')) $('bgNone').checked = state.bgNone;
+
+    $('strokeWidth').value = state.strokeWidth;
+    $('strokeWidthVal').textContent = state.strokeWidth;
+    $('strokeLinecap').value = state.strokeLinecap;
+    $('strokeLinejoin').value = state.strokeLinejoin;
+    $('size').value = state.size;
+    $('sizeVal').textContent = state.size;
+
     wireColor('strokeColor', 'strokeColorText', 'stroke', null, '');
     wireColor('bgColor', 'bgColorText', 'bg', 'bgNone', 'transparent');
 
     $('strokeWidth').addEventListener('input', (e) => {
       state.strokeWidth = +e.target.value;
       $('strokeWidthVal').textContent = state.strokeWidth;
+      saveState();
       renderGrid();
       refreshDetail();
     });
     $('strokeLinecap').addEventListener('change', (e) => {
       state.strokeLinecap = e.target.value;
+      saveState();
       renderGrid(); refreshDetail();
     });
     $('strokeLinejoin').addEventListener('change', (e) => {
       state.strokeLinejoin = e.target.value;
+      saveState();
       renderGrid(); refreshDetail();
     });
     $('size').addEventListener('input', (e) => {
       state.size = +e.target.value;
       $('sizeVal').textContent = state.size;
+      saveState();
       // size only affects exported width/height; thumbnails stay at 100.
       refreshDetail();
     });
@@ -555,7 +652,10 @@
       state.category = e.target.value;
       renderGrid();
     });
-    $('resetBtn').addEventListener('click', () => location.reload());
+    $('resetBtn').addEventListener('click', () => {
+      localStorage.removeItem('cyc-customizer-state');
+      location.reload();
+    });
 
     populateCategories();
     renderGrid();
