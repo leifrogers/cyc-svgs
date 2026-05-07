@@ -29,7 +29,7 @@ const outputDir = path.join(repoRoot, 'dist');
 const outputFile = path.join(outputDir, 'knitSymbols.json');
 const catalogFile = path.join(repoRoot, 'catalog.json');
 
-const toCamelKey = (category, name) => {
+export const toCamelKey = (category, name) => {
   const merged = `${category}-${name}`;
   return merged.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
 };
