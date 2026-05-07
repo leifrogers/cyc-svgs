@@ -279,6 +279,12 @@
         const sym = symbols[key];
         const [, , vbW = 100, vbH = 100] = (sym.viewBox || '0 0 100 100').split(/\s+/).map(parseFloat);
         sym._parsedVB = { vbW, vbH, aspect: (vbW / vbH) || 1 };
+
+        const searchFields = [sym.name, sym.label, sym.meaning, sym.displayName, sym.key];
+        if (sym.aliases) {
+          searchFields.push(...sym.aliases);
+        }
+        sym._searchText = searchFields.filter(Boolean).join(' ').toLowerCase();
       }
     } catch (e) {
       const grid = document.getElementById('grid');
@@ -417,13 +423,7 @@
     const matches = (sym) => {
       if (state.category && sym.category !== state.category) return false;
       if (!state.search) return true;
-      const q = state.search.toLowerCase();
-
-      const searchFields = [sym.name, sym.label, sym.meaning, sym.displayName, sym.key];
-      if (sym.aliases) {
-        searchFields.push(...sym.aliases);
-      }
-      return searchFields.filter(Boolean).some((s) => s.toLowerCase().includes(q));
+      return sym._searchText.includes(state.search.toLowerCase());
     };
     const filtered = () => Object.values(symbols).filter(matches);
 
