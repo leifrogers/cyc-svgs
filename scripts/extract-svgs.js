@@ -75,8 +75,7 @@ const normalizeStrokes = ($, root) => {
   });
 };
 
-const extractFromFile = (filePath, category, name) => {
-  const svgContent = fs.readFileSync(filePath, 'utf8');
+export const extractFromSVG = (svgContent, category, name, filePath) => {
   const $ = cheerio.load(svgContent, { xmlMode: true });
   const svg = $('svg').first();
 
@@ -102,6 +101,11 @@ const extractFromFile = (filePath, category, name) => {
     viewBox,
     innerHTML: svg.html() ?? '',
   };
+};
+
+const extractFromFile = (filePath, category, name) => {
+  const svgContent = fs.readFileSync(filePath, 'utf8');
+  return extractFromSVG(svgContent, category, name, filePath);
 };
 
 const main = () => {

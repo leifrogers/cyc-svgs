@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { toDisplayName, toCamelKey } from './extract-svgs.js';
+import { toDisplayName, toCamelKey, extractFromSVG } from './extract-svgs.js';
 
 test('toCamelKey should convert category and name to camelCase', () => {
   assert.strictEqual(toCamelKey('basic', 'knit'), 'basicKnit');
@@ -18,9 +18,6 @@ test('toCamelKey should handle empty strings', () => {
 });
 
 test('toCamelKey should handle consecutive dashes correctly', () => {
-  // Multiple dashes will result in the first character after dash being uppercased, and other dashes preserved if they precede a character
-  // But due to the regex /-([a-z0-9])/g, multiple dashes might leave some.
-  // Let's test current behavior. "a--b" -> "a-" + uppercase(b) = "a-B"
   assert.strictEqual(toCamelKey('a', '-b'), 'a-B');
 });
 
@@ -50,4 +47,29 @@ test('toDisplayName should handle strings with leading/trailing dashes', () => {
 
 test('toDisplayName should handle numeric parts', () => {
   assert.strictEqual(toDisplayName('cable-4-back'), 'Cable 4 Back');
+});
+
+test('extractFromSVG should use viewBox if present', () => {
+  const svgContent = '<svg viewBox="0 0 50 50"><path d="M0 0h50v50H0z"/></svg>';
+  const result = extractFromSVG(svgContent, 'test', 'icon', 'test/icon.svg');
+  assert.strictEqual(result.viewBox, '0 0 50 50');
+});
+
+test('extractFromSVG should fallback to width and height if viewBox is missing', () => {
+  const svgContent = '<svg width="80" height="60"><path d="M0 0h80v60H0z"/></svg>';
+  const result = extractFromSVG(svgContent, 'test', 'icon', 'test/icon.svg');
+  assert.strictEqual(result.viewBox, '0 0 80 60');
+});
+
+test('extractFromSVG should fallback to 0 0 100 100 if viewBox, width, and height are missing', () => {
+  const svgContent = '<svg><path d="M0 0h100v100H0z"/></svg>';
+  const result = extractFromSVG(svgContent, 'test', 'icon', 'test/icon.svg');
+  assert.strictEqual(result.viewBox, '0 0 100 100');
+});
+
+test('extractFromSVG should throw error if no svg root is found', () => {
+  const svgContent = '<div>Not an SVG</div>';
+  assert.throws(() => {
+    extractFromSVG(svgContent, 'test', 'icon', 'test/icon.svg');
+  }, /No <svg> root in test\/icon.svg/);
 });
