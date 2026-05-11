@@ -264,6 +264,16 @@
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script type="module">
+    const esc = (s) => {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    };
+
     // ---------------------------------------------------------------------
     // Load extracted symbol data
     // ---------------------------------------------------------------------
@@ -288,22 +298,11 @@
       }
     } catch (e) {
       const grid = document.getElementById('grid');
-      const p = document.createElement('p');
-      p.style.color = '#c33';
-      p.textContent = `Could not load ${DATA_URL}: ${e.message}.`;
-      const br = document.createElement('br');
-      const span = document.createElement('span');
-      span.textContent = 'Run ';
-      const code = document.createElement('code');
-      code.textContent = 'npm run build';
-      const span2 = document.createElement('span');
-      span2.textContent = ' first, then refresh.';
-      p.appendChild(br);
-      p.appendChild(span);
-      p.appendChild(code);
-      p.appendChild(span2);
-      grid.innerHTML = '';
-      grid.appendChild(p);
+      grid.innerHTML = `
+        <p style="color: #c33;">
+          Could not load ${esc(DATA_URL)}: ${esc(e.message)}.<br>
+          Run <code>npm run build</code> first, then refresh.
+        </p>`;
       throw e;
     }
 
@@ -348,15 +347,6 @@
       category: '',
     };
     const $ = (id) => document.getElementById(id);
-    const esc = (s) => {
-      if (s == null) return '';
-      return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    };
 
     const mobileQuery = window.matchMedia('(max-width: 800px)');
     const setSidebarOpen = (open) => {
