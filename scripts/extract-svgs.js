@@ -16,7 +16,7 @@
  * matching on { category, name }.
  */
 
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as cheerio from 'cheerio';
@@ -43,14 +43,18 @@ const logNote = (items, label) => {
   for (const k of items) console.warn(`    - ${k}`);
 };
 
-const loadCatalogIndex = () => {
-  if (!fs.existsSync(catalogFile)) return new Map();
-  const raw = JSON.parse(fs.readFileSync(catalogFile, 'utf8'));
-  const idx = new Map();
-  for (const entry of raw) {
-    idx.set(`${entry.category}/${entry.name}`, entry);
+const loadCatalogIndex = async () => {
+  try {
+    const raw = JSON.parse(await fs.readFile(catalogFile, 'utf8'));
+    const idx = new Map();
+    for (const entry of raw) {
+      idx.set(`${entry.category}/${entry.name}`, entry);
+    }
+    return idx;
+  } catch (err) {
+    if (err.code === 'ENOENT') return new Map();
+    throw err;
   }
-  return idx;
 };
 
 // Shape elements that carry presentation attributes we care about.
@@ -103,60 +107,80 @@ export const extractFromSVG = (svgContent, category, name, filePath) => {
   };
 };
 
-const extractFromFile = (filePath, category, name) => {
-  const svgContent = fs.readFileSync(filePath, 'utf8');
+const extractFromFile = async (filePath, category, name) => {
+  const svgContent = await fs.readFile(filePath, 'utf8');
   return extractFromSVG(svgContent, category, name, filePath);
 };
 
-const main = () => {
-  const catalogIndex = loadCatalogIndex();
+const main = async () => {
+  const catalogIndex = await loadCatalogIndex();
   const symbols = {};
   let count = 0;
   const missingFromCatalog = [];
 
-  for (const category of CATEGORIES) {
+  const categoryPromises = CATEGORIES.map(async (category) => {
     const dir = path.join(repoRoot, category);
-    if (!fs.existsSync(dir)) {
-      console.warn(`(skip) missing category folder: ${category}`);
-      continue;
-    }
-    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.svg')).sort();
-    for (const file of files) {
-      const name = file.replace(/\.svg$/, '');
-      const data = extractFromFile(path.join(dir, file), category, name);
+    try {
+      const files = (await fs.readdir(dir)).filter((f) => f.endsWith('.svg')).sort();
+      const filePromises = files.map(async (file) => {
+        const name = file.replace(/\.svg$/, '');
+        const data = await extractFromFile(path.join(dir, file), category, name);
 
-      const meta = catalogIndex.get(`${category}/${name}`);
-      if (meta) {
-        data.label = meta.label;
-        data.meaning = meta.meaning;
-        if (meta.aliases) data.aliases = meta.aliases;
-        if (meta.w) data.cellWidth = meta.w;
-        if (meta.h) data.cellHeight = meta.h;
-      } else {
-        missingFromCatalog.push(`${category}/${name}`);
+        const meta = catalogIndex.get(`${category}/${name}`);
+        if (meta) {
+          data.label = meta.label;
+          data.meaning = meta.meaning;
+          if (meta.aliases) data.aliases = meta.aliases;
+          if (meta.w) data.cellWidth = meta.w;
+          if (meta.h) data.cellHeight = meta.h;
+        } else {
+          missingFromCatalog.push(`${category}/${name}`);
+        }
+        return data;
+      });
+      return await Promise.all(filePromises);
+    } catch (err) {
+      if (err.code === 'ENOENT') {
+        console.warn(`(skip) missing category folder: ${category}`);
+        return [];
       }
+      throw err;
+    }
+  });
 
+  const results = await Promise.all(categoryPromises);
+  for (const categoryResults of results) {
+    for (const data of categoryResults) {
       symbols[data.key] = data;
       count++;
     }
   }
 
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
-  fs.writeFileSync(outputFile, JSON.stringify(symbols, null, 2) + '\n');
+  await fs.mkdir(outputDir, { recursive: true });
+  await fs.writeFile(outputFile, JSON.stringify(symbols, null, 2) + '\n');
 
   console.log(`Extracted ${count} symbols → ${path.relative(repoRoot, outputFile)}`);
   logNote(missingFromCatalog, 'SVG(s) without catalog.json metadata:');
 
   // Cross-check: catalog entries with no SVG file present.
   const orphanCatalog = [];
+  const orphanPromises = [];
   for (const [k] of catalogIndex) {
     const [c, n] = k.split('/');
     const expected = path.join(repoRoot, c, `${n}.svg`);
-    if (!fs.existsSync(expected)) orphanCatalog.push(k);
+    orphanPromises.push(
+      fs.access(expected)
+        .then(() => true)
+        .catch(() => { orphanCatalog.push(k); return false; })
+    );
   }
+  await Promise.all(orphanPromises);
   logNote(orphanCatalog, 'catalog entr(y/ies) with no SVG export yet:');
 };
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main();
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 }
