@@ -1,6 +1,12 @@
-# CYC Knit Chart Symbols
+# CYC Knit & Crochet Chart Symbols
 
-An SVG icon set of the [Craft Yarn Council standard knit chart symbols](https://www.craftyarncouncil.com/standards/knit-chart-symbols), with a reproducible build pipeline and a GitHub Pages customizer for browsing, theming, and downloading symbols.
+An SVG icon set of the [Craft Yarn Council standard knit chart symbols](https://www.craftyarncouncil.com/standards/knit-chart-symbols) and [crochet chart symbols](https://www.craftyarncouncil.com/standards/crochet-chart-symbols), with a reproducible build pipeline and a GitHub Pages customizer for browsing, theming, and downloading symbols.
+
+Symbol categories shipped today:
+
+- [basic/](basic/) — single-stitch knit symbols (knit, purl, yarn over, decreases, increases, slip stitches, etc.)
+- [cable-v1/](cable-v1/) and [cable-v2/](cable-v2/) — two visual styles of cable-crossing symbols
+- [crochet/](crochet/) — crochet chart symbols (chain, slip stitch, sc/hdc/dc/tr/dtr, clusters, popcorn, shell, picot, front/back post, front/back loop indicators, etc.)
 
 - [Using the JSON bundle](#using-the-json-bundle)
 - [Customizer (GitHub Pages)](#customizer-github-pages)
@@ -55,10 +61,11 @@ Apply `fill`, `stroke`, and `stroke-width` to the wrapper `<svg>`. SVG cascade m
 
 ### Grid convention
 
-One chart cell is `100 × 100` viewBox units.
+One knit chart cell is `100 × 100` viewBox units.
 
-- Basic (single-stitch) symbols: `viewBox="0 0 100 100"`
+- Basic (single-stitch) knit symbols: `viewBox="0 0 100 100"`
 - _N_-stitch cables: `viewBox="0 0 (N*100) 100"`
+- Crochet symbols use their own intrinsic dimensions (see `cellWidth` / `cellHeight` in the JSON, sourced from [crochet/catalog.json](crochet/catalog.json)). Crochet chart cells are not a fixed size — stitches like `dc`, `tr`, and `dtr` are intentionally taller than `sc` to reflect their relative row height, and clusters / shells span multiple base stitches. Each crochet catalog entry also records an `anchor` point (the base of the stitch) for layout on a chart grid.
 
 SVGs omit fixed `width` and `height` so consumers control sizing while aspect ratio is preserved automatically.
 
@@ -98,17 +105,18 @@ python3 -m http.server 8000
 
 ### Steps
 
-1. **Design** — Edit symbols in the `.af` (Affinity Designer) source files under [basic/](basic/), [cable-v1/](cable-v1/), or [cable-v2/](cable-v2/).
+1. **Design** — Edit symbols in the `.af` (Affinity Designer) source files under [basic/](basic/), [cable-v1/](cable-v1/), [cable-v2/](cable-v2/), or [crochet/](crochet/).
 2. **Export** — Export each `.af` as an SVG with the same base name into the same folder (e.g. `basic/knit.af` → `basic/knit.svg`).
-3. **Optimize** — `npm run optimize` runs [SVGO](https://github.com/svg/svgo) over every `*.svg` in place, converting shapes to `<path>` and stripping fixed dimensions while preserving `viewBox`, fills, and strokes.
-4. **Extract** — `npm run extract` parses the optimized SVGs with [Cheerio](https://github.com/cheeriojs/cheerio), merges metadata from `catalog.json`, and writes `dist/knitSymbols.json`.
+3. **Optimize** — `npm run optimize` runs [SVGO](https://github.com/svg/svgo) over every `*.svg` in the knit folders (`basic/`, `cable-v1/`, `cable-v2/`) in place, converting shapes to `<path>` and stripping fixed dimensions while preserving `viewBox`, fills, and strokes. Crochet SVGs are stroke-only line art and are committed without SVGO optimization so their `<line>` / `<path>` structure stays predictable.
+4. **Extract** — `npm run extract` parses every SVG with [Cheerio](https://github.com/cheeriojs/cheerio), merges metadata from the root [catalog.json](catalog.json) and [crochet/catalog.json](crochet/catalog.json), and writes `dist/knitSymbols.json`.
 
 `npm run build` runs steps 3 and 4 together.
 
 ### Source of truth
 
 - `*.af` files are the editable design sources. SVG files are derived exports — do not hand-edit them.
-- [catalog.json](catalog.json) holds human-readable metadata (label, meaning, cell width, cell height) keyed by `{ category, name }`. Add an entry here for every new symbol.
+- [catalog.json](catalog.json) holds human-readable metadata (label, meaning, cell width, cell height) keyed by `{ category, name }` for knit symbols. Add an entry here for every new knit symbol.
+- [crochet/catalog.json](crochet/catalog.json) is the auxiliary metadata file for crochet symbols. Entries are keyed by `name` only (the `crochet` category is applied automatically at build time) and additionally carry `anchor` coordinates marking the base of each stitch.
 
 ---
 
@@ -118,16 +126,18 @@ python3 -m http.server 8000
 
 1. Create the symbol in Affinity Designer and save it as a `.af` file in the appropriate category folder.
 2. Export to SVG (same base name, same folder).
-3. Add a metadata entry to [catalog.json](catalog.json).
+3. Add metadata for the new symbol:
+  - Knit symbols (`basic/`, `cable-v1/`, `cable-v2/`): add an entry to [catalog.json](catalog.json) keyed by `{ category, name }`.
+  - Crochet symbols (`crochet/`): add an entry to [crochet/catalog.json](crochet/catalog.json) keyed by `name` and include `anchor` coordinates.
 4. Run `npm run build` and verify the symbol appears correctly in the customizer.
-5. Commit the `.af`, `.svg`, updated `catalog.json`, and updated `dist/knitSymbols.json` together.
+5. Commit the `.af`, `.svg`, updated metadata file(s), and updated `dist/knitSymbols.json` together.
 
 ### Validation warnings
 
 `npm run extract` prints warnings for:
 
-- SVG files present on disk with no matching `catalog.json` entry
-- `catalog.json` entries with no corresponding `.svg` export
+- SVG files present on disk with no matching metadata entry (in either [catalog.json](catalog.json) or [crochet/catalog.json](crochet/catalog.json))
+- Metadata entries (in either [catalog.json](catalog.json) or [crochet/catalog.json](crochet/catalog.json)) with no corresponding `.svg` export
 
 Resolve both before opening a pull request.
 
@@ -135,7 +145,7 @@ Resolve both before opening a pull request.
 
 ## Attribution
 
-The symbols in this repository are vector reproductions of the [Craft Yarn Council](https://www.craftyarncouncil.com) standard knit chart symbols. The CYC permits free use with attribution. If you use these symbols in a publication or on a website, include the following credit:
+The symbols in this repository are vector reproductions of the [Craft Yarn Council](https://www.craftyarncouncil.com) standard [knit chart symbols](https://www.craftyarncouncil.com/standards/knit-chart-symbols) and [crochet chart symbols](https://www.craftyarncouncil.com/standards/crochet-chart-symbols). The CYC permits free use with attribution. If you use these symbols in a publication or on a website, include the following credit:
 
 > Source: Craft Yarn Council of America's [www.YarnStandards.com](http://www.YarnStandards.com)
 
