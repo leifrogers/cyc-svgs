@@ -24,7 +24,16 @@ import * as cheerio from 'cheerio';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
 
-const CATEGORIES = ['basic', 'cable-v1', 'cable-v2'];
+// Each source maps a folder on disk to a logical `category` exposed in the
+// emitted catalog. `catalog` (optional) points at an auxiliary catalog.json
+// whose entries are keyed by `name` only (no embedded category) — those entries
+// get re-keyed under this source's category at load time.
+const SOURCES = [
+  { category: 'basic',    dir: 'basic' },
+  { category: 'cable-v1', dir: 'cable-v1' },
+  { category: 'cable-v2', dir: 'cable-v2' },
+  { category: 'crochet',  dir: 'crochet', catalog: 'crochet/catalog.json' },
+];
 const outputDir = path.join(repoRoot, 'dist');
 const outputFile = path.join(outputDir, 'knitSymbols.json');
 const catalogFile = path.join(repoRoot, 'catalog.json');
@@ -43,18 +52,35 @@ const logNote = (items, label) => {
   for (const k of items) console.warn(`    - ${k}`);
 };
 
-const loadCatalogIndex = async () => {
+const readJsonIfExists = async (file) => {
   try {
-    const raw = JSON.parse(await fs.readFile(catalogFile, 'utf8'));
-    const idx = new Map();
-    for (const entry of raw) {
-      idx.set(`${entry.category}/${entry.name}`, entry);
-    }
-    return idx;
+    return JSON.parse(await fs.readFile(file, 'utf8'));
   } catch (err) {
-    if (err.code === 'ENOENT') return new Map();
+    if (err.code === 'ENOENT') return null;
     throw err;
   }
+};
+
+const loadCatalogIndex = async () => {
+  const idx = new Map();
+
+  const rootRaw = await readJsonIfExists(catalogFile);
+  if (Array.isArray(rootRaw)) {
+    for (const entry of rootRaw) {
+      idx.set(`${entry.category}/${entry.name}`, entry);
+    }
+  }
+
+  for (const source of SOURCES) {
+    if (!source.catalog) continue;
+    const auxRaw = await readJsonIfExists(path.join(repoRoot, source.catalog));
+    if (!Array.isArray(auxRaw)) continue;
+    for (const entry of auxRaw) {
+      idx.set(`${source.category}/${entry.name}`, { ...entry, category: source.category });
+    }
+  }
+
+  return idx;
 };
 
 // Shape elements that carry presentation attributes we care about.
@@ -68,11 +94,30 @@ const SHAPE_TAGS = new Set([
 //   - If element has fill="none", it's a stroke-only shape: leave alone.
 //   - Otherwise (explicit fill OR no fill attribute → inherits), it's a
 //     filled glyph; force stroke="none" unless the author set their own.
+const readStyleProp = (styleStr, prop) => {
+  if (!styleStr) return undefined;
+  const m = styleStr.match(new RegExp(`(?:^|;)\\s*${prop}\\s*:\\s*([^;]+)`, 'i'));
+  return m ? m[1].trim() : undefined;
+};
+
+const effectiveFill = ($el) => {
+  const attr = $el.attr('fill');
+  if (attr != null) return attr;
+  return readStyleProp($el.attr('style'), 'fill');
+};
+
 const normalizeStrokes = ($, root) => {
+  // If the root <svg> declares fill="none" (attr or inline style), every
+  // child inherits stroke-only behavior. Skip normalization entirely to
+  // avoid forcing stroke="none" on inherently stroke-only shapes (e.g.,
+  // crochet symbols built from <line> elements).
+  const rootFill = effectiveFill(root);
+  if (rootFill === 'none') return;
+
   root.find('*').each((_, el) => {
     if (!SHAPE_TAGS.has(el.tagName)) return;
     const $el = $(el);
-    const fill = $el.attr('fill');
+    const fill = effectiveFill($el);
     const stroke = $el.attr('stroke');
     if (fill === 'none') return;
     if (stroke == null) $el.attr('stroke', 'none');
@@ -118,8 +163,8 @@ const main = async () => {
   let count = 0;
   const missingFromCatalog = [];
 
-  const categoryPromises = CATEGORIES.map(async (category) => {
-    const dir = path.join(repoRoot, category);
+  const categoryPromises = SOURCES.map(async ({ category, dir: relDir }) => {
+    const dir = path.join(repoRoot, relDir);
     try {
       const files = (await fs.readdir(dir)).filter((f) => f.endsWith('.svg')).sort();
       const filePromises = files.map(async (file) => {
@@ -141,7 +186,7 @@ const main = async () => {
       return await Promise.all(filePromises);
     } catch (err) {
       if (err.code === 'ENOENT') {
-        console.warn(`(skip) missing category folder: ${category}`);
+        console.warn(`(skip) missing source folder: ${relDir}`);
         return [];
       }
       throw err;
@@ -163,11 +208,13 @@ const main = async () => {
   logNote(missingFromCatalog, 'SVG(s) without catalog.json metadata:');
 
   // Cross-check: catalog entries with no SVG file present.
+  const dirByCategory = new Map(SOURCES.map((s) => [s.category, s.dir]));
   const orphanCatalog = [];
   const orphanPromises = [];
   for (const [k] of catalogIndex) {
     const [c, n] = k.split('/');
-    const expected = path.join(repoRoot, c, `${n}.svg`);
+    const relDir = dirByCategory.get(c) ?? c;
+    const expected = path.join(repoRoot, relDir, `${n}.svg`);
     orphanPromises.push(
       fs.access(expected)
         .then(() => true)

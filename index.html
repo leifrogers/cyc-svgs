@@ -38,6 +38,9 @@
   }
   header h1 { margin: 0 0 0.25rem; font-size: 1.4rem; }
   header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  header .lede { margin-bottom: 0.35rem; }
+  header .meta { font-size: 0.8rem; }
+  header .meta .sep { margin: 0 0.4rem; opacity: 0.6; }
   header a { color: var(--accent); }
 
   main { display: grid; grid-template-columns: 280px 1fr; gap: 0; }
@@ -175,13 +178,27 @@
 </head>
 <body>
   <header>
-    <h1>CYC Knit Chart Symbols</h1>
-    <p>Vector reproductions of the <a href="https://www.craftyarncouncil.com/standards/knit-chart-symbols" target="_blank" rel="noopener">Craft Yarn Council standard knit chart symbols</a>. Customize color, size, and background — preview live, then download individual SVGs or the whole set as a ZIP. <a href="https://github.com/leifrogers/cyc-svgs" target="_blank" rel="noopener">Source on GitHub</a>.</p>
+    <h1>CYC Chart Symbols</h1>
+    <p class="lede">Vector reproductions of the Craft Yarn Council standard <a href="https://www.craftyarncouncil.com/standards/knit-chart-symbols" target="_blank" rel="noopener">knit</a> and <a href="https://www.craftyarncouncil.com/standards/crochet-chart-symbols" target="_blank" rel="noopener">crochet</a> chart symbols. Customize color, size, and background — preview live, then download individual SVGs or the whole set as a ZIP.</p>
+    <p class="meta">
+      Symbols courtesy of the <a href="https://www.craftyarncouncil.com/" target="_blank" rel="noopener">Craft Yarn Council</a> (<a href="http://www.YarnStandards.com" target="_blank" rel="noopener">YarnStandards.com</a>).
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="https://github.com/leifrogers/cyc-svgs" target="_blank" rel="noopener">Source on GitHub</a>
+    </p>
   </header>
 
   <main>
     <aside id="sidebar" aria-label="Customizer controls">
       <button class="secondary mobileOnly fullWidth mb075" id="sidebarClose">Close controls</button>
+      <h2>Discipline</h2>
+      <div class="field">
+        <label for="discipline">Symbol set</label>
+        <select id="discipline">
+          <option value="knit">Knit</option>
+          <option value="crochet">Crochet</option>
+        </select>
+      </div>
+
       <h2>Color</h2>
       <div class="field">
         <label>Fill &amp; stroke <span class="swatch"><input type="color" id="strokeColor" value="#1a1a1a"></span></label>
@@ -190,8 +207,8 @@
 
       <h2>Stroke</h2>
       <div class="field">
-        <label>Width <span id="strokeWidthVal">5</span></label>
-        <input type="range" id="strokeWidth" min="0" max="40" step="1" value="8">
+        <label>Width <span id="strokeWidthVal"></span></label>
+        <input type="range" id="strokeWidth" min="0" max="10" step="1" value="1">
       </div>
       <div class="field">
         <label>Linecap</label>
@@ -337,12 +354,13 @@
 
     const state = {
       strokeColor: savedState.strokeColor || defaultStrokeColor,
-      strokeWidth: savedState.strokeWidth !== undefined ? savedState.strokeWidth : 8,
+      strokeWidth: savedState.strokeWidth !== undefined ? savedState.strokeWidth : 2,
       strokeLinecap: savedState.strokeLinecap || 'round',
       strokeLinejoin: savedState.strokeLinejoin || 'round',
       bgColor: savedState.bgColor || '#ffffff',
       bgNone: savedState.bgNone !== undefined ? savedState.bgNone : true,
       size: savedState.size || 200,
+      discipline: savedState.discipline === 'crochet' ? 'crochet' : 'knit',
       search: '',
       category: '',
     };
@@ -411,6 +429,7 @@
     const countEl = $('count');
 
     const matches = (sym) => {
+      if ((state.discipline === 'crochet') !== (sym.category === 'crochet')) return false;
       if (state.category && sym.category !== state.category) return false;
       if (!state.search) return true;
       return sym._searchText.includes(state.search.toLowerCase());
@@ -436,13 +455,18 @@
     };
 
     const populateCategories = () => {
-      const cats = [...new Set(Object.values(symbols).map((s) => s.category))].sort();
       const sel = $('categoryFilter');
+      while (sel.options.length > 1) sel.remove(1);
+      const pool = Object.values(symbols).filter((s) =>
+        (state.discipline === 'crochet') === (s.category === 'crochet'),
+      );
+      const cats = [...new Set(pool.map((s) => s.category))].sort();
       for (const c of cats) {
         const opt = document.createElement('option');
         opt.value = c; opt.textContent = c;
         sel.appendChild(opt);
       }
+      sel.value = state.category;
     };
 
     // ---------------------------------------------------------------------
@@ -539,11 +563,14 @@
     };
 
     $('downloadAll').addEventListener('click', () => {
-      downloadZip(Object.values(symbols), 'cyc-knit-symbols.zip');
+      const items = Object.values(symbols).filter((s) =>
+        (state.discipline === 'crochet') === (s.category === 'crochet'),
+      );
+      downloadZip(items, `cyc-${state.discipline}-symbols.zip`);
     });
     $('downloadVisible').addEventListener('click', () => {
       const items = filtered();
-      if (items.length) downloadZip(items, 'cyc-knit-symbols-filtered.zip');
+      if (items.length) downloadZip(items, `cyc-${state.discipline}-symbols-filtered.zip`);
     });
 
     // ---------------------------------------------------------------------
@@ -640,6 +667,14 @@
     });
     $('categoryFilter').addEventListener('change', (e) => {
       state.category = e.target.value;
+      renderGrid();
+    });
+    $('discipline').value = state.discipline;
+    $('discipline').addEventListener('change', (e) => {
+      state.discipline = e.target.value === 'crochet' ? 'crochet' : 'knit';
+      state.category = '';
+      populateCategories();
+      saveState();
       renderGrid();
     });
     $('resetBtn').addEventListener('click', () => {

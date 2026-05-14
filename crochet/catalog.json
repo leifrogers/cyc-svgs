@@ -1,0 +1,233 @@
+[
+  {
+    "name": "chain",
+    "w": 60,
+    "h": 20,
+    "label": "chain (ch)",
+    "meaning": "Chain stitch. Foundation of crochet, used between stitches as spacers.",
+    "anchor": {
+      "x": 30,
+      "y": 10
+    }
+  },
+  {
+    "name": "slip-stitch",
+    "w": 20,
+    "h": 20,
+    "label": "slip stitch (sl st)",
+    "meaning": "Slip stitch. Drawn as a filled dot.",
+    "anchor": {
+      "x": 10,
+      "y": 10
+    }
+  },
+  {
+    "name": "sc-plus",
+    "w": 30,
+    "h": 30,
+    "label": "single crochet \u2014 plus variant (sc)",
+    "meaning": "Single crochet, plus-sign variant. Both '+' and '\u00d7' are commonly used for sc.",
+    "anchor": {
+      "x": 15.0,
+      "y": 28
+    }
+  },
+  {
+    "name": "sc-cross",
+    "w": 30,
+    "h": 30,
+    "label": "single crochet \u2014 cross variant (sc)",
+    "meaning": "Single crochet, cross/X variant. Both '+' and '\u00d7' are commonly used for sc.",
+    "anchor": {
+      "x": 15.0,
+      "y": 28
+    }
+  },
+  {
+    "name": "hdc",
+    "w": 30,
+    "h": 50,
+    "label": "half double crochet (hdc)",
+    "meaning": "Half double crochet. T-shape with no tick on stem.",
+    "anchor": {
+      "x": 15.0,
+      "y": 48
+    }
+  },
+  {
+    "name": "dc",
+    "w": 30,
+    "h": 60,
+    "label": "double crochet (dc)",
+    "meaning": "Double crochet. T-shape with one tick on stem.",
+    "anchor": {
+      "x": 15.0,
+      "y": 58
+    }
+  },
+  {
+    "name": "tr",
+    "w": 30,
+    "h": 80,
+    "label": "treble crochet (tr)",
+    "meaning": "Treble crochet. T-shape with two ticks on stem.",
+    "anchor": {
+      "x": 15.0,
+      "y": 78
+    }
+  },
+  {
+    "name": "dtr",
+    "w": 30,
+    "h": 100,
+    "label": "double treble crochet (dtr)",
+    "meaning": "Double treble crochet. T-shape with three ticks on stem.",
+    "anchor": {
+      "x": 15.0,
+      "y": 98
+    }
+  },
+  {
+    "name": "sc2tog",
+    "w": 60,
+    "h": 50,
+    "label": "sc2tog",
+    "meaning": "Single crochet 2 together. Two stems converging at base.",
+    "anchor": {
+      "x": 30.0,
+      "y": 48
+    }
+  },
+  {
+    "name": "sc3tog",
+    "w": 80,
+    "h": 50,
+    "label": "sc3tog",
+    "meaning": "Single crochet 3 together. Three stems converging at base.",
+    "anchor": {
+      "x": 40.0,
+      "y": 48
+    }
+  },
+  {
+    "name": "dc2tog",
+    "w": 60,
+    "h": 70,
+    "label": "dc2tog",
+    "meaning": "Double crochet 2 together. Two ticked stems converging at base.",
+    "anchor": {
+      "x": 30.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "dc3tog",
+    "w": 80,
+    "h": 70,
+    "label": "dc3tog",
+    "meaning": "Double crochet 3 together. Three ticked stems converging at base.",
+    "anchor": {
+      "x": 40.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "3-dc-cluster",
+    "w": 46,
+    "h": 70,
+    "label": "3-dc cluster",
+    "meaning": "3-dc cluster. Three double crochets worked into the same stitch and joined at top, drawn as three ticked stems bundled in an almond outline.",
+    "anchor": {
+      "x": 23.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "3-hdc-cluster",
+    "w": 46,
+    "h": 70,
+    "label": "3-hdc cluster / puff / bobble",
+    "meaning": "3-hdc cluster, also called puff stitch or bobble. Three hdc worked into the same stitch, drawn as three plain stems in an almond outline.",
+    "anchor": {
+      "x": 23.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "5-dc-popcorn",
+    "w": 66,
+    "h": 70,
+    "label": "5-dc popcorn",
+    "meaning": "5-dc popcorn. Work 5 dc into the same stitch. Drop the loop from the hook and insert hook into the first dc of the group. Pull the dropped loop through the first dc to close, creating a 3d nubble. Shown as five ticked stems in an almond outline with a horizontal bar through the middle indicating the closure.",
+    "anchor": {
+      "x": 33.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "5-dc-shell",
+    "w": 120,
+    "h": 70,
+    "label": "5-dc shell",
+    "meaning": "5-dc shell. Five dc worked into the same stitch and spread open, forming a fan. Stems splay outward from a single base point, each with its own tick and top crossbar.",
+    "anchor": {
+      "x": 60.0,
+      "y": 68
+    }
+  },
+  {
+    "name": "ch-3-picot",
+    "w": 26,
+    "h": 35,
+    "label": "ch-3 picot",
+    "meaning": "Chain-3 picot. Three chain stitches joined back to the base, forming a small decorative loop.",
+    "anchor": {
+      "x": 13.0,
+      "y": 33
+    }
+  },
+  {
+    "name": "fpdc",
+    "w": 30,
+    "h": 75,
+    "label": "front post dc (FPdc)",
+    "meaning": "Front post double crochet. Worked around the post of the stitch below from the front of the work. Drawn as a dc with a hook curving to the right at the base.",
+    "anchor": {
+      "x": 15.0,
+      "y": 73
+    }
+  },
+  {
+    "name": "bpdc",
+    "w": 30,
+    "h": 75,
+    "label": "back post dc (BPdc)",
+    "meaning": "Back post double crochet. Worked around the post of the stitch below from the back of the work. Drawn as a dc with a hook curving to the left at the base.",
+    "anchor": {
+      "x": 15.0,
+      "y": 73
+    }
+  },
+  {
+    "name": "worked-in-back-loop",
+    "w": 30,
+    "h": 18,
+    "label": "worked in back loop only",
+    "meaning": "Indicates the following stitch is worked into the back loop only. Symbol appears at base of stitch being worked. Drawn as an arc opening downward (\u2229).",
+    "anchor": {
+      "x": 15.0,
+      "y": 16
+    }
+  },
+  {
+    "name": "worked-in-front-loop",
+    "w": 30,
+    "h": 18,
+    "label": "worked in front loop only",
+    "meaning": "Indicates the following stitch is worked into the front loop only. Symbol appears at base of stitch being worked. Drawn as an arc opening upward (\u222a).",
+    "anchor": {
+      "x": 15.0,
+      "y": 16
+    }
+  }
+]
